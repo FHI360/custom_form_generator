@@ -214,14 +214,13 @@ export const createOrUpdateDataStore = async (engine, postObject, store, key, mo
   }
 
   try {
-
     await engine.mutate({
       resource: `dataStore/${store}/${key}`,
       type: modeType ? 'create' : 'update',
       data: postObject,
     });
   } catch (error) {
-    console.error('Error creating or updating object:', error);
+      console.error('Error creating or updating object:', error);
   }
 }
 

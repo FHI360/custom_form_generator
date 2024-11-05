@@ -1,7 +1,7 @@
 import { useDataQuery, useAlert } from '@dhis2/app-runtime'
 import { SingleSelect, SingleSelectOption  } from '@dhis2-ui/select'
 import React, { useState, useEffect } from 'react';
-import AppGetDEList from '../AppGetDEList'
+import AppGetDEList from './AppGetDEList'
 import HorizontalCategory from './HorizontalCategory'
 import HorizontalCategoryLevel1 from './HorizontalCategoryLevel1'
 import VerticalCategoryLevel1 from './VerticalCategoryLevel1'
