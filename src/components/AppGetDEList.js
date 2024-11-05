@@ -1,13 +1,13 @@
 import { useDataQuery } from '@dhis2/app-runtime'
 import {useState, useEffect } from 'react';
 import React from 'react'
-import classes from './App.module.css'
+import classes from '../App.module.css'
 import { SingleSelect, SingleSelectOption  } from '@dhis2-ui/select'
-import {customImage} from './utils'
+import {customImage} from '../utils'
 import PropTypes from 'prop-types'
 import { Chip } from '@dhis2-ui/chip'
-import { IconInfo16 } from '@dhis2/ui-icons'; 
-import level5Guide from './images/level5.png'
+import {  Switch } from '@dhis2/ui';
+
 
 const dataSets = {
     targetedEntity: {
@@ -48,6 +48,7 @@ const AppGetDEList = props => {
     const [dataElemntID, setDataElement] = useState('xxxxx')
     const [updateCombos, setUpdateCombos] = useState(false)
     const [catLoaded, setCatLoaded] = useState(false)
+    const [showDataElementView, setDataElementView] = useState(true)    
 
     const selectedcategoryCombo = 'xxxx'
     
@@ -210,51 +211,60 @@ const AppGetDEList = props => {
 
     const dataElements = data.targetedEntity.dataSets[0]?.dataSetElements || [];
     const excludeIDs = props.loadedProject.dataElements.map(element => element.id);
+    console.log("excludeIDs: ", excludeIDs)
 
     return (
- 
-        <div className={classes.baseMargin}>
-          {/* <h1>{dataElemntID} {dataElemntID} - {dataElemntID.length}</h1> */}
-                {(props.selectedDataElementId.length > 0) && (<Chip
-                  className={classes.customImageContainer}
-                  icon={customImage('sync', 'large')}
-                  onClick={handleCustomImageClick}
-                  style={{ marginLeft: '10px' }} // Adjust margin as needed
-                >
-                  Show/Refresh CoC
-                </Chip>)}
+        <>
+            <Switch 
+            checked={showDataElementView === true} 
+            label={showDataElementView ?  "Showing Not Yet Configured Data Elements"  : "Showing All Data Elements"}
+            onChange={() => {
+              setDataElementView((prev) => !prev);
+            }}
+            />
+                    <div className={classes.baseMargin}>
+                      {/* <h1>{dataElemntID} {dataElemntID} - {dataElemntID.length}</h1> */}
+                            {(props.selectedDataElementId.length > 0) && (<Chip
+                              className={classes.customImageContainer}
+                              icon={customImage('sync', 'large')}
+                              onClick={handleCustomImageClick}
+                              style={{ marginLeft: '10px' }} // Adjust margin as needed
+                            >
+                              Show/Refresh CoC
+                            </Chip>)}
 
-                {/* <Chip
-                  className={classes.customImageContainer}
-                  icon={customImage('sync', 'large')}
-                  onClick={handleCustomImageClick}
-                  style={{ marginLeft: '10px' }} // Adjust margin as needed
-                >
-                  Refresh
-                </Chip> */}
-          
-                    <SingleSelect
-                            className="select"
-                            filterable
-                            noMatchText="No match found"
-                            placeholder="Select DataElement"
-                            selected={props.selectedDataElementId}
-                            value={props.selectedDataElementId}
-                            // onChange={handleDataElementChange}
-                            onChange={({ selected }) => handleDataElementChange(selected)}
-                            disabled={disabled}
-                        >
-                              {props.editMode ? (
-                                  // Render all data elements if in edit mode
-                                  dataElements.map(({ dataElement }) => (
-                                      <SingleSelectOption
-                                          label={dataElement.displayName}
-                                          key={dataElement.id}
-                                          value={dataElement.id}
-                                      />
-                                  ))
-                              ) : (
-                                  // Render only filtered data elements if not in edit mode
+                            {/* <Chip
+                              className={classes.customImageContainer}
+                              icon={customImage('sync', 'large')}
+                              onClick={handleCustomImageClick}
+                              style={{ marginLeft: '10px' }} // Adjust margin as needed
+                            >
+                              Refresh
+                            </Chip> */}
+                      
+                      <SingleSelect
+                          className="select"
+                          filterable
+                          noMatchText="No match found"
+                          placeholder="Select DataElement"
+                          selected={props.selectedDataElementId}
+                          value={props.selectedDataElementId}
+                          onChange={({ selected }) => handleDataElementChange(selected)}
+                          disabled={disabled}
+                      >
+                          {props.editMode ? (
+                              // Render all data elements if in edit mode
+                              dataElements.map(({ dataElement }) => (
+                                  <SingleSelectOption
+                                      label={dataElement.displayName}
+                                      key={dataElement.id}
+                                      value={dataElement.id}
+                                  />
+                              ))
+                          ) : (
+                              // Check showDataElementView when not in edit mode
+                              showDataElementView ? (
+                                  // Render only filtered data elements if showDataElementView is true
                                   dataElements
                                       .filter(element => !excludeIDs.includes(element.dataElement.id))
                                       .map(({ dataElement }) => (
@@ -264,14 +274,24 @@ const AppGetDEList = props => {
                                               value={dataElement.id}
                                           />
                                       ))
-                              )}
+                              ) : (
+                                  // Render all data elements if showDataElementView is false
+                                  dataElements.map(({ dataElement }) => (
+                                      <SingleSelectOption
+                                          label={dataElement.displayName}
+                                          key={dataElement.id}
+                                          value={dataElement.id}
+                                      />
+                                  ))
+                              )
+                          )}
+                      </SingleSelect>
 
-                        </SingleSelect>
-                                  <h1></h1>
-              <span>{props.AddorEditModeActive && (props.loadedCombosName)}</span>
+                                              <h1></h1>
+                          <span>{props.AddorEditModeActive && (props.loadedCombosName)}</span>
 
-       </div>
-      
+                  </div>
+       </>
     )
 }
 
