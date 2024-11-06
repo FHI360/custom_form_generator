@@ -48,7 +48,7 @@ const AppGetDEList = props => {
     const [dataElemntID, setDataElement] = useState('xxxxx')
     const [updateCombos, setUpdateCombos] = useState(false)
     const [catLoaded, setCatLoaded] = useState(false)
-    const [showDataElementView, setDataElementView] = useState(true)    
+
 
     const selectedcategoryCombo = 'xxxx'
     
@@ -211,15 +211,13 @@ const AppGetDEList = props => {
 
     const dataElements = data.targetedEntity.dataSets[0]?.dataSetElements || [];
     const excludeIDs = props.loadedProject.dataElements.map(element => element.id);
-    console.log("excludeIDs: ", excludeIDs)
-
     return (
         <>
             <Switch 
-            checked={showDataElementView === true} 
-            label={showDataElementView ?  "Showing Not Yet Configured Data Elements"  : "Showing All Data Elements"}
+            checked={props.showDataElementView === true} 
+            label={props.showDataElementView ?  "Showing Not Yet Configured Data Elements"  : "Showing All Data Elements"}
             onChange={() => {
-              setDataElementView((prev) => !prev);
+              props.setDataElementView((prev) => !prev);
             }}
             />
                     <div className={classes.baseMargin}>
@@ -263,7 +261,7 @@ const AppGetDEList = props => {
                               ))
                           ) : (
                               // Check showDataElementView when not in edit mode
-                              showDataElementView ? (
+                              props.showDataElementView ? (
                                   // Render only filtered data elements if showDataElementView is true
                                   dataElements
                                       .filter(element => !excludeIDs.includes(element.dataElement.id))
@@ -315,6 +313,8 @@ AppGetDEList.propTypes = {
   updateDataElementCatLenght: PropTypes.bool.isRequired,
   AddorEditModeActive: PropTypes.bool.isRequired,
   setloadedCombosName:PropTypes.func.isRequired,
+  showDataElementView: PropTypes.bool.isRequired,
+  setDataElementView:PropTypes.func.isRequired,
 
 };
 
