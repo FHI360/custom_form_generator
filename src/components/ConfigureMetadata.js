@@ -144,6 +144,7 @@ const ConfigureMetadata = (props) => {
     const [showGuide, setShowGuide] = useState(false);
     const [updateDataElementCatLenght, setUpdateDataElementCatLenght] = useState(false);
     const [dataElementCatLenght, setDataElementCatLenght] = useState(0);
+    const [showDataElementView, setDataElementView] = useState(props.selectedProject.RepeatDataElements || true)    
 
 
 
@@ -493,6 +494,12 @@ const ConfigureMetadata = (props) => {
             clearConstants()
         }  
     }, [editMode, savingDataElement]);
+
+    useEffect(() => {  
+        if(showDataElementView){
+            console.log("The Views: ", showDataElementView)
+        }  
+    }, [showDataElementView]);
 
  /***
  * 
@@ -995,6 +1002,15 @@ const ConfigureMetadata = (props) => {
                         // If it exists, update its value
                         loadedProject.modifiedDate = modifiedDate();
                     }
+
+                    // Check if 'modifiedDate' exists in loadedProject
+                    if (!loadedProject.hasOwnProperty('RepeatDataElements')) {
+                        // If it doesn't exist, add it to the object
+                        loadedProject.RepeatDataElements = showDataElementView;
+                    } else {
+                        // If it exists, update its value
+                        loadedProject.RepeatDataElements = showDataElementView;
+                    }
     
                     // Check if 'catCombos' exists in loadedProject
                     if (!loadedProject.hasOwnProperty('catCombos')) {
@@ -1018,12 +1034,19 @@ const ConfigureMetadata = (props) => {
                     
                     // Find the index of the dataElement with the matching id in loadedProject.dataElements
                     const indexToUpdate = dataElements.findIndex(element => element.id === selectedDataElementId);
+
     
                     // If the index is found, replace the object at that index with the corresponding object from projectData.dataElements
-                    if (indexToUpdate !== -1) {
+                    if (indexToUpdate !== -1 && showDataElementView) {
                         const updatedDataElements = [...dataElements];
+
                         updatedDataElements[indexToUpdate] = projectData.dataElements.find(element => element.id === selectedDataElementId);
-    
+                        
+                        
+                        console.log("indexToUpdate: ", indexToUpdate)
+                        console.log("showDataElementView:", showDataElementView)
+                        console.log("updatedDataElements:", updatedDataElements)
+                        
                         if (updateDataStore(props.engine, {
                             ...loadedProject,
                             ...projectData,
@@ -2350,6 +2373,8 @@ const ConfigureMetadata = (props) => {
                               updateDataElementCatLenght={updateDataElementCatLenght}
                               AddorEditModeActive={AddorEditModeActive}
                               setAddorEditMode={setAddorEditMode}
+                              setDataElementView={setDataElementView}
+                              showDataElementView={showDataElementView}
 
                                       />;
                               }
